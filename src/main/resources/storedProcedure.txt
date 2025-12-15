@@ -1,0 +1,26 @@
+CREATE DEFINER=`root`@`localhost` PROCEDURE `book_crud_proc`(
+IN p_status varchar(16),
+OUT o_msg varchar(64),
+IN p_book_id INT,
+IN p_title varchar(45),
+IN p_price DOUBLE,
+in p_author_name varchar(45),
+in p_publication_name varchar(45),
+in p_publication_date DATE
+)
+BEGIN
+	IF p_status='books' then
+		select * from book;
+	elseif p_status='book_by_id' then
+		select * from book where book_id=p_book_id;
+	elseif p_status='del_by_id' then
+		delete from book where book_id=p_book_id;
+        set o_msg='1 book deleted';
+	elseif p_status='in_book' then
+		insert into book(title, price, author_name, publication_name, publication_date) values (p_title, p_price, p_author_name, p_publication_name, p_publication_date);
+		set o_msg='1 book saved';
+    elseif p_status='up_book_by_id' then
+		update book set title=p_title, price=p_price, author_name=p_author_name, publication_name=p_publication_name, publication_date=p_publication_date where book_id=p_book_id;
+		set o_msg='1 book updated';
+    end if;
+END
