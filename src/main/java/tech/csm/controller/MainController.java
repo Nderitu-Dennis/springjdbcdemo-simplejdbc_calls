@@ -58,13 +58,12 @@ public class MainController {
 		/*simple jdbc call*/
 		
 		
-		SimpleJdbcCall simpleJdbcCall=new SimpleJdbcCall(dataSource)
-				.withProcedureName("book_crud_proc");
+		//SimpleJdbcCall simpleJdbcCall=new SimpleJdbcCall(dataSource).withProcedureName("book_crud_proc");
 				
 		
-	//	Map<String,Object> output=simpleJdbcCall.execute("in_book", null, "php", 234.54, "author-2","pub_1", "2025-02-09"); //positional params, order must be perfect
+		//Map<String,Object> output=simpleJdbcCall.execute("in_book", null, "mr kamau bus", 234.54, "barbara kimenye","pub_1", "2025-02-09"); //positional params, order must be perfect
 		
-		Map<String,Object> output=simpleJdbcCall.execute(new MapSqlParameterSource()  //Spring sends parameters to MySQL by name, not by position.order doesnt matter
+	/*	Map<String,Object> output=simpleJdbcCall.execute(new MapSqlParameterSource()  //Spring sends parameters to MySQL by name, not by position.order doesnt matter
 					.addValue("p_status", "in_book")
 					.addValue("p_book_id", null)
 					.addValue("p_title", "Bible")
@@ -74,108 +73,124 @@ public class MainController {
 					.addValue("p_publication_date", "2025-01-21")
 					);
 		
-		System.out.println(output.get("o_msg"));
+		System.out.println(output.get("o_msg"));*/
 		
 		/*NOTE
 		 * You never pass OUT parameters as input
-		Spring discovers them automatically*/
+		Spring discovers them automatically*/	
+		
+		
+	/*
+	 * notes for below--returning result set
+	 * When this procedure executes a SELECT, map the ResultSet into Java objects immediately.
+	 * cz spring returns raw data but with this, Spring automatically maps rows
+ 	 * You receive List<Book> directly*/	
+		
+	/*	SimpleJdbcCall simpleJdbcCall=new SimpleJdbcCall(dataSource)
+				.withProcedureName("book_crud_proc")
+				.returningResultSet("u_books", new RowMapper<Book>() {
+
+					@Override
+					public Book mapRow(ResultSet rs, int rowNum) throws SQLException {
+						Book b=new Book();
+						
+// First part:  define how result-set rows will be mapped to Book objects	
+//If this procedure returns a ResultSet, here is how to turn each row into a Book.”
+						b.setBookId(rs.getInt(1));
+						b.setTitle(rs.getString(2));
+						b.setPrice(rs.getDouble(3));
+						b.setAuthorName(rs.getString(4));
+						b.setPublicationName(rs.getString(5));
+						b.setPublicationDate(rs.getDate(6));
+						
+						
+						return b;
+						
+					}
+
+				
+				});	
+		
+
+//  execute the stored procedure
+		Map<String,Object> output=simpleJdbcCall.execute(new MapSqlParameterSource()
+					.addValue("p_status", "books")  //this triggers SELECT * FROM book;
+					
+					.addValue("p_book_id", null)
+				//	.addValue("o_msg", Types.VARCHAR)
+					.addValue("p_title", null)
+					.addValue("p_price", null)
+					.addValue("p_author_name", null)
+					.addValue("p_publication_name", null)
+					.addValue("p_publication_date", null)
+					);
+		
+	System.out.println(output.get("u_books")); */
 		
 		
 		
 		
 		
-//		SimpleJdbcCall simpleJdbcCall=new SimpleJdbcCall(dataSource)
-//				.withProcedureName("book_crud_proc")
-//				.returningResultSet("u_books", new RowMapper<Book>() {
-//
-//					@Override
-//					public Book mapRow(ResultSet rs, int rowNum) throws SQLException {
-//						Book b=new Book();
-//						
-//						b.setBookId(rs.getInt(1));
-//						b.setTitle(rs.getString(2));
-//						b.setPrice(rs.getDouble(3));
-//						b.setAuthorName(rs.getString(4));
-//						b.setPublicationName(rs.getString(5));
-//						b.setPublicationDate(rs.getDate(6));
-//						
-//						return b;
-//						
-//					}
-//
-//				
-//				});
-//		
-//		
-//		
-//		Map<String,Object> output=simpleJdbcCall.execute(new MapSqlParameterSource()
-//					.addValue("p_status", "books")
-//					.addValue("p_book_id", null)
-//					.addValue("o_msg", Types.VARCHAR)
-//					.addValue("p_title", null)
-//					.addValue("p_price", null)
-//					.addValue("p_author_name", null)
-//					.addValue("p_publication_name", null)
-//					.addValue("p_publication_date", null)
-//					);
-//		
-//		System.out.println(output.get("u_books"));
-		
-		
-		
-		
-		
-//		SimpleJdbcCall simpleJdbcCall=new SimpleJdbcCall(dataSource)
-//				.withProcedureName("book_crud_proc")
-//				.returningResultSet("u_books", new RowMapper<Map<String,Object>>() {
-//
-//					@Override
-//					public Map<String, Object> mapRow(ResultSet rs, int rowNum) throws SQLException {
-//						Map<String,Object> dl=new HashMap<>();						
-//						dl.put("book_id", rs.getInt(1));
-//						dl.put("title", rs.getString(2));
-//						dl.put("price", rs.getDouble(3));
-//						
-//						return dl;
-//					}
-//				});
-//		
-//		
-//		
-//		Map<String,Object> output=simpleJdbcCall.execute(new MapSqlParameterSource()
-//					.addValue("p_status", "books")
-//					.addValue("p_book_id", null)
-//					.addValue("o_msg", Types.VARCHAR)
-//					.addValue("p_title", null)
-//					.addValue("p_price", null)
-//					.addValue("p_author_name", null)
-//					.addValue("p_publication_name", null)
-//					.addValue("p_publication_date", null)
-//					);
-//		
-//		System.out.println(output);
-		
-		
-		
-		
-		
+	/*
+	 * SimpleJdbcCall simpleJdbcCall=new SimpleJdbcCall(dataSource)
+	 * .withProcedureName("book_crud_proc")
+	 * .returningResultSet("u_books", new RowMapper<Map<String,Object>>() {
+	 * // diff btwn this and the previous is that the above maps each row into a
+	 * Book b object while this
+	 * // maps into a generic map-> Map<String,Object>
+	 * 
+	 * 
+	 * @Override
+	 * 
+	 * public Map<String, Object> mapRow(ResultSet rs, int rowNum) throws
+	 * SQLException {
+	 * 
+	 * Map<String,Object> dl=new HashMap<>();
+	 * dl.put("book_id", rs.getInt(1));
+	 * dl.put("title", rs.getString(2));
+	 * dl.put("price", rs.getDouble(3));
+	 * dl.put("author_name", rs.getString(4));
+	 * 
+	 * return dl;
+	 * }
+	 * });
+	 * 
+	 * 
+	 * 
+	 * Map<String,Object> output=simpleJdbcCall.execute(new MapSqlParameterSource()
+	 * .addValue("p_status", "books")
+	 * .addValue("p_book_id", null)
+	 * .addValue("p_title", null)
+	 * .addValue("p_price", null)
+	 * .addValue("p_author_name", null)
+	 * .addValue("p_publication_name", null)
+	 * .addValue("p_publication_date", null)
+	 * );
+	 * 
+	 * System.out.println(output);
+	 * 
+	 * 
+	 * 
+	 */
 		
 		
 		
 		/*named parameter jdbc template*/
+				
 		
 		
 		
+		NamedParameterJdbcTemplate namedParameterJdbcTemplate=new NamedParameterJdbcTemplate(dataSource);
 		
+		SqlParameterSource params=new MapSqlParameterSource()
+				.addValue("d_id",50)
+				.addValue("sal", 8000);
 		
+		List<Emp> eList=namedParameterJdbcTemplate.query(
+				"select employee_id, last_name, salary, department_id from employees where "
+				+ "department_id=:d_id and salary>=:sal",params, BeanPropertyRowMapper.newInstance(Emp.class));
 		
-//		NamedParameterJdbcTemplate namedParameterJdbcTemplate=new NamedParameterJdbcTemplate(dataSource);
-//		
-//		SqlParameterSource params=new MapSqlParameterSource().addValue("d_id",50).addValue("sal", 8000);
-//		
-//		List<Emp> eList=namedParameterJdbcTemplate.query("select employee_id, last_name, salary, department_id from employees where department_id=:d_id and salary>=:sal",params, BeanPropertyRowMapper.newInstance(Emp.class));
-//		
-//		eList.forEach(System.out::println);
+		eList.forEach(System.out::println);
 		
 		
 		
