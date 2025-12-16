@@ -14,7 +14,7 @@ public class DataSourceConfiguration {
 		db.driverClassName("com.mysql.cj.jdbc.Driver");
 		db.url("jdbc:mysql://localhost:3306/book_crud");
 		db.username("root");
-		db.password("user");
+		db.password("root");
 		return db.build();
 	}
 }

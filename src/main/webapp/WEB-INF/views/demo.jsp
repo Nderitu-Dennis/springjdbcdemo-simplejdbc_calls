@@ -7,6 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
- this is a demo page.....
+ this is a demo page.....simple jdbc calls with stored procedure
 </body>
 </html>

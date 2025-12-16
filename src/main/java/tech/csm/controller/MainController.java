@@ -55,27 +55,30 @@ public class MainController {
 	public String getForm() throws SQLException {
 		
 		
-		/*simple jdcb call*/
+		/*simple jdbc call*/
 		
 		
 		SimpleJdbcCall simpleJdbcCall=new SimpleJdbcCall(dataSource)
 				.withProcedureName("book_crud_proc");
 				
 		
-		Map<String,Object> output=simpleJdbcCall.execute("in_book", null, "php", 234.54, "author-2","pub_1", "2025-02-09");
+	//	Map<String,Object> output=simpleJdbcCall.execute("in_book", null, "php", 234.54, "author-2","pub_1", "2025-02-09"); //positional params, order must be perfect
 		
-//		Map<String,Object> output=simpleJdbcCall.execute(new MapSqlParameterSource()
-//					.addValue("p_status", "in_book")
-//					.addValue("p_book_id", null)
-//					.addValue("o_msg", Types.VARCHAR)
-//					.addValue("p_title", ".Net")
-//					.addValue("p_price", 544.75)
-//					.addValue("p_author_name", "Author_1")
-//					.addValue("p_publication_name", "MS")
-//					.addValue("p_publication_date", "2025-01-21")
-//					);
+		Map<String,Object> output=simpleJdbcCall.execute(new MapSqlParameterSource()  //Spring sends parameters to MySQL by name, not by position.order doesnt matter
+					.addValue("p_status", "in_book")
+					.addValue("p_book_id", null)
+					.addValue("p_title", "Bible")
+					.addValue("p_price", 544.75)
+					.addValue("p_author_name", "ludwig krapf")
+					.addValue("p_publication_name", "MS")
+					.addValue("p_publication_date", "2025-01-21")
+					);
 		
 		System.out.println(output.get("o_msg"));
+		
+		/*NOTE
+		 * You never pass OUT parameters as input
+		Spring discovers them automatically*/
 		
 		
 		
